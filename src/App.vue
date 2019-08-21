@@ -1,11 +1,11 @@
 <template>
     <div id="app">
         <b-container>
-            <AppHeader />
+            <AppHeader :numCorrect="numCorrect" :numTotal="numTotal" />
             <QuizBox
                 v-if="questions.length"
                 :currentQuestion="questions[index]"
-                :next ="next"
+                :next="next"
             />
         </b-container>
     </div>
@@ -23,11 +23,13 @@ export default {
     data() {
         return {
             questions: [],
-            index:0,
+            index: 0,
+            numCorrect: 0,
+            numTotal: 0
         };
     },
-    methods:{
-        next:function () {
+    methods: {
+        next: function() {
             this.index++;
         }
     },
@@ -44,6 +46,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
