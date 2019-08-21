@@ -1,28 +1,49 @@
 <template>
     <div id="app">
-        <img alt="Vue logo" src="./assets/logo.png" />
-        <HelloWorld msg="Welcome to Your Vue.js App" />
+        <b-container>
+            <AppHeader />
+            <QuizBox
+                v-if="questions.length"
+                :currentQuestion="questions[index]"
+                :next ="next"
+            />
+        </b-container>
     </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
-
+import AppHeader from './components/AppHeader';
+import QuizBox from './components/QuizBox';
 export default {
     name: 'app',
     components: {
-        HelloWorld
+        AppHeader,
+        QuizBox
+    },
+    data() {
+        return {
+            questions: [],
+            index:0,
+        };
+    },
+    methods:{
+        next:function () {
+            this.index++;
+        }
+    },
+    mounted: function() {
+        fetch(
+            'https://opentdb.com/api.php?amount=10&category=32&type=multiple',
+            { method: 'get' }
+        )
+            .then(response => response.json())
+            .then(jsonData => {
+                this.questions = jsonData.results;
+            });
     }
 };
 </script>
 
 <style>
-#app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-}
+
 </style>
