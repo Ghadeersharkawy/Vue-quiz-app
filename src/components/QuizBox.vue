@@ -6,7 +6,7 @@
             <hr class="my-4" />
             <b-list-group class="pb-4">
                 <b-list-group-item
-                    v-for="(answer, index) in getAnswers"
+                    v-for="(answer, index) in shuffeledAnswers"
                     :key="index"
                     @click="selectedAnswer(index)"
                     :class="selectedIndex === index ? 'selected' : ''"
@@ -24,26 +24,38 @@
     </div>
 </template>
 <script>
-import _ from 'lodash'
+import _ from 'lodash';
 export default {
     name: 'QuizBox',
     props: {
         currentQuestion: Object,
-        next: Function
+        next: Function,
+        increment: Function
     },
     data() {
         return {
             selectedIndex: null,
-            shuffeledAnswers: []
+            shuffeledAnswers: [],
+            correctIndex: null
         };
     },
     watch: {
-        currentQuestion() {
-            this.selectedIndex = null;
-            this.shuffelAnswers();
+        currentQuestion: {
+            immediate: true,
+            handler() {
+                this.selectedIndex = null;
+                this.shuffelAnswers();
+            }
         }
+
+        // currentQuestion() {
+        //     this.selectedIndex = null;
+        //     this.shuffelAnswers();
+        // }
     },
     computed: {
+        //replaced with shuffleAnswers method to get and shuffle answers
+
         getAnswers() {
             let answers = [...this.currentQuestion.incorrect_answers];
             answers.push(this.currentQuestion.correct_answer);
@@ -59,23 +71,25 @@ export default {
                 ...this.currentQuestion.incorrect_answers,
                 this.currentQuestion.correct_answer
             ];
-            this.shuffeledAnswers = _.shuffel(answers);
-        },
-        submit(selectedIndex) {
-            if (
-                this.getAnswers[selectedIndex] ===
+            this.shuffeledAnswers = _.shuffle(answers);
+            this.correctIndex = this.shuffeledAnswers.indexOf(
                 this.currentQuestion.correct_answer
-            ) {
-                console.log('yaaaay Correct!!!');
-                this.next();
+            );
+        },
+        submit() {
+            let isCorrect = false;
+            if (this.selectedIndex === this.correctIndex) {
+                isCorrect = true;
             }
+            this.increment(isCorrect);
+            this.next();
         }
     }
 };
 </script>
 <style lang="scss" scoped>
 .list-group-item {
-    background-color: rgba(255, 255, 255, 0.18823529411764706);
+    background-color: rgba(255, 255, 255, 0.19);
     &:hover {
         background-color: lightblue;
     }
@@ -87,6 +101,6 @@ export default {
     background-color: red;
 }
 .selected {
-    border: 2px solid blue;
+    border: 2px solid #007bff;
 }
 </style>

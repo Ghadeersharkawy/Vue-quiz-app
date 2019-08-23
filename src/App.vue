@@ -6,6 +6,7 @@
                 v-if="questions.length"
                 :currentQuestion="questions[index]"
                 :next="next"
+                :increment="increment"
             />
         </b-container>
     </div>
@@ -29,8 +30,14 @@ export default {
         };
     },
     methods: {
-        next: function() {
+        next() {
             this.index++;
+        },
+        increment(isCorrect) {
+            if (isCorrect) {
+                this.numCorrect++;
+            }
+            this.numTotal++;
         }
     },
     mounted: function() {

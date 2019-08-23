@@ -16,4 +16,8 @@ export default {
     props: ['numCorrect', 'numTotal']
 };
 </script>
-<style scoped></style>
+<style scoped>
+.app-header {
+    margin: 30px auto;
+}
+</style>
