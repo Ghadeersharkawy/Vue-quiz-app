@@ -9,7 +9,17 @@
                     v-for="(answer, index) in shuffeledAnswers"
                     :key="index"
                     @click="selectedAnswer(index)"
-                    :class="selectedIndex === index ? 'selected' : ''"
+                    :class="[
+                        !answered && selectedIndex === index
+                            ? 'selected'
+                            : answered && correctIndex === index
+                            ? 'correct'
+                            : answered &&
+                              selectedIndex == index &&
+                              correctIndex !== index
+                            ? 'wrong'
+                            : ''
+                    ]"
                 >
                     {{ answer }}
                 </b-list-group-item>
@@ -17,9 +27,13 @@
             <b-button variant="primary" class="mr-3" @click="next()"
                 >Next</b-button
             >
-            <b-button variant="success" @click="submit(selectedIndex)"
-                >Submit</b-button
+            <b-button
+                variant="success"
+                :disabled="selectedIndex === null || answered"
+                @click="submit()"
             >
+                Submit
+            </b-button>
         </b-jumbotron>
     </div>
 </template>
@@ -36,7 +50,8 @@ export default {
         return {
             selectedIndex: null,
             shuffeledAnswers: [],
-            correctIndex: null
+            correctIndex: null,
+            answered: false
         };
     },
     watch: {
@@ -44,6 +59,7 @@ export default {
             immediate: true,
             handler() {
                 this.selectedIndex = null;
+                this.answered = false;
                 this.shuffelAnswers();
             }
         }
@@ -78,11 +94,12 @@ export default {
         },
         submit() {
             let isCorrect = false;
+            this.answered = true;
             if (this.selectedIndex === this.correctIndex) {
                 isCorrect = true;
             }
             this.increment(isCorrect);
-            this.next();
+            //this.next();
         }
     }
 };
