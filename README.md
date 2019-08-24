@@ -1,4 +1,4 @@
-# new-quiz-app
+# vue-quiz-app
 
 ## Project setup
 ```
